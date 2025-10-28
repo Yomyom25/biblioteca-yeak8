@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca YEAK8</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Ocultar el contenido hasta que React cargue */
+        #root {
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+        
+        #root.loaded {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script>
+        // Mostrar la aplicación cuando React termine de cargar
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('root').classList.add('loaded');
+            }, 100);
+        });
+    </script>
+</body>
+</html>
