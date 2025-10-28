@@ -189,7 +189,7 @@ const LoginRegister = () => {
                   value={formData.matricula}
                   onChange={handleChange}
                   className={errors.matricula ? "error" : ""}
-                  placeholder="Tu matrícula"
+                  placeholder="Tu matrícula o correo"
                   disabled={isLoading}
                 />
               </div>
