@@ -20,8 +20,18 @@ const BookCatalog = () => {
       try {
         const response = await axios.get('http://localhost:5000/api/books'); // Ajusta el puerto si es necesario
         console.log("📚 Libros recibidos del backend:", response.data);
-        setBooks(response.data);
-        setFilteredBooks(response.data);
+
+        // Transformamos los datos para asegurar que imagen y año existan
+        const mappedBooks = response.data.map(book => ({
+          ...book,
+          imagen: book.link_imagen || book.imagen || null,
+          ano: book.fecha_publicacion
+            ? new Date(book.fecha_publicacion).getFullYear()
+            : 'N/A'
+        }));
+
+        setBooks(mappedBooks);
+        setFilteredBooks(mappedBooks);
       } catch (error) {
         console.error("❌ Error al cargar los libros:", error);
       }
@@ -65,7 +75,7 @@ const BookCatalog = () => {
     // 📆 Filtro por año
     if (filters.fechaPublicacion) {
       filtered = filtered.filter(book =>
-        book.fecha_publicacion && book.fecha_publicacion.includes(filters.fechaPublicacion)
+        book.ano && book.ano.toString().includes(filters.fechaPublicacion)
       );
     }
 
@@ -108,14 +118,12 @@ const BookCatalog = () => {
   };
 
   const getStatusColor = (estatus) => {
-    switch (estatus) {
+    switch (estatus?.toLowerCase()) {
       case 'disponible':
-      case 'Disponible':
         return '#28a745';
       case 'no disponible':
-      case 'No Disponible':
         return '#dc3545';
-      case 'Próximamente':
+      case 'próximamente':
         return '#ffc107';
       default:
         return '#6c757d';
@@ -232,8 +240,8 @@ const BookCatalog = () => {
               <div key={book.id_libro || book.id} className="book-card">
                 <div className="book-image">
                   <div className="image-placeholder">
-                    {book.link_imagen ? (
-                      <img src={`http://localhost:5000/${book.link_imagen}`} alt={book.titulo} />
+                    {book.imagen ? (
+                      <img src={book.imagen} alt={book.titulo} />
                     ) : (
                       <span>📚</span>
                     )}
@@ -254,7 +262,7 @@ const BookCatalog = () => {
                       <strong>Categoría:</strong> {book.categoria}
                     </span>
                     <span className="meta-item">
-                      <strong>Año:</strong> {book.fecha_publicacion?.substring(0, 4)}
+                      <strong>Año:</strong> {book.ano}
                     </span>
                     <span className="meta-item">
                       <strong>Tipo:</strong> {book.tipo}
