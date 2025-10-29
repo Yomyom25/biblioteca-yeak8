@@ -134,8 +134,8 @@ select.error {
 .file-label {
   display: block;
   padding: 12px 25px;
-  background: #1e3c72;
-  color: white;
+  background: #ffa93f;
+  color: whitesmoke;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -151,7 +151,7 @@ select.error {
 .file-label:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
-  background: #2a4a8a;
+  background: #6282c1;
 }
 
 .file-list {
