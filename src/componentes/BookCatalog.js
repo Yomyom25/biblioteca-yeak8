@@ -25,9 +25,6 @@ const BookCatalog = () => {
         const mappedBooks = response.data.map(book => ({
           ...book,
           imagen: book.link_imagen || book.imagen || null,
-          ano: book.fecha_publicacion
-            ? new Date(book.fecha_publicacion).getFullYear()
-            : 'N/A'
         }));
 
         setBooks(mappedBooks);
