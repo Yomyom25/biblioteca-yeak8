@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '../estilos/BookCatalog.css';
 
 const BookCatalog = () => {
@@ -13,69 +14,20 @@ const BookCatalog = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [hasFilters, setHasFilters] = useState(false);
 
-  // Datos de ejemplo (simulando respuesta de API)
-  const sampleBooks = [
-    {
-      id: 1,
-      titulo: 'Cien Años de Soledad',
-      autor: 'Gabriel García Márquez',
-      categoria: 'Realismo Mágico',
-      año: 1967,
-      tipo: 'Físico',
-      estatus: 'Disponible',
-      ejemplares: 5,
-      imagen: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=300&fit=crop'
-    },
-    {
-      id: 2,
-      titulo: '1984',
-      autor: 'George Orwell',
-      categoria: 'Ciencia Ficción',
-      año: 1949,
-      tipo: 'Digital',
-      estatus: 'No Disponible',
-      ejemplares: 0,
-      imagen: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop'
-    },
-    {
-      id: 3,
-      titulo: 'El Principito',
-      autor: 'Antoine de Saint-Exupéry',
-      categoria: 'Literatura Infantil',
-      año: 1943,
-      tipo: 'Físico',
-      estatus: 'Disponible',
-      ejemplares: 3,
-      imagen: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop'
-    },
-    {
-      id: 4,
-      titulo: 'Crimen y Castigo',
-      autor: 'Fiódor Dostoievski',
-      categoria: 'Literatura Clásica',
-      año: 1866,
-      tipo: 'Físico',
-      estatus: 'Próximamente',
-      ejemplares: 0,
-      imagen: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=300&fit=crop'
-    },
-    {
-      id: 5,
-      titulo: 'Harry Potter y la Piedra Filosofal',
-      autor: 'J.K. Rowling',
-      categoria: 'Fantasía',
-      año: 1997,
-      tipo: 'Físico',
-      estatus: 'Disponible',
-      ejemplares: 2,
-      imagen: 'https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=400&h=300&fit=crop'
-    }
-  ];
-
+  // ✅ Cargar libros desde el backend
   useEffect(() => {
-    // Simular carga de datos
-    setBooks(sampleBooks);
-    setFilteredBooks(sampleBooks);
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/books'); // Ajusta el puerto si es necesario
+        console.log("📚 Libros recibidos del backend:", response.data);
+        setBooks(response.data);
+        setFilteredBooks(response.data);
+      } catch (error) {
+        console.error("❌ Error al cargar los libros:", error);
+      }
+    };
+
+    fetchBooks();
   }, []);
 
   const handleFilterChange = (e) => {
@@ -85,8 +37,7 @@ const BookCatalog = () => {
       [name]: value
     }));
 
-    // Verificar si hay al menos un filtro activo
-    const anyFilterActive = Object.values({...filters, [name]: value}).some(filter => filter !== '');
+    const anyFilterActive = Object.values({ ...filters, [name]: value }).some(filter => filter !== '');
     setHasFilters(anyFilterActive);
   };
 
@@ -102,31 +53,37 @@ const BookCatalog = () => {
 
     let filtered = books;
 
-    // Aplicar filtros de búsqueda
+    // 🔍 Filtro por búsqueda
     if (searchTerm) {
-      filtered = filtered.filter(book => 
+      filtered = filtered.filter(book =>
         book.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         book.autor.toLowerCase().includes(searchTerm.toLowerCase()) ||
         book.categoria.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Aplicar filtros avanzados
+    // 📆 Filtro por año
     if (filters.fechaPublicacion) {
-      filtered = filtered.filter(book => 
-        book.año.toString().includes(filters.fechaPublicacion)
+      filtered = filtered.filter(book =>
+        book.fecha_publicacion && book.fecha_publicacion.includes(filters.fechaPublicacion)
       );
     }
+
+    // 🏷️ Filtro por categoría
     if (filters.categoria) {
-      filtered = filtered.filter(book => 
+      filtered = filtered.filter(book =>
         book.categoria.toLowerCase().includes(filters.categoria.toLowerCase())
       );
     }
+
+    // ✍️ Filtro por autor
     if (filters.autor) {
-      filtered = filtered.filter(book => 
+      filtered = filtered.filter(book =>
         book.autor.toLowerCase().includes(filters.autor.toLowerCase())
       );
     }
+
+    // 📦 Filtro por ejemplares
     if (filters.ejemplares) {
       if (filters.ejemplares === 'disponibles') {
         filtered = filtered.filter(book => book.ejemplares > 0);
@@ -152,8 +109,10 @@ const BookCatalog = () => {
 
   const getStatusColor = (estatus) => {
     switch (estatus) {
+      case 'disponible':
       case 'Disponible':
         return '#28a745';
+      case 'no disponible':
       case 'No Disponible':
         return '#dc3545';
       case 'Próximamente':
@@ -164,7 +123,7 @@ const BookCatalog = () => {
   };
 
   const getStatusText = (estatus, ejemplares) => {
-    if (estatus === 'Próximamente') return 'Próximamente';
+    if (estatus?.toLowerCase() === 'próximamente') return 'Próximamente';
     return ejemplares > 0 ? 'Disponible' : 'No Disponible';
   };
 
@@ -180,7 +139,7 @@ const BookCatalog = () => {
           <p>Explora nuestra colección de libros disponibles</p>
         </header>
 
-        {/* Búsqueda Rápida */}
+        {/* 🔍 Búsqueda rápida */}
         <div className="search-section">
           <div className="search-box">
             <input
@@ -194,7 +153,7 @@ const BookCatalog = () => {
           </div>
         </div>
 
-        {/* Filtros Avanzados */}
+        {/* 🎯 Filtros avanzados */}
         <div className="filters-section">
           <h3>Filtros Avanzados</h3>
           <div className="filters-grid">
@@ -250,7 +209,7 @@ const BookCatalog = () => {
           </div>
 
           <div className="filter-actions">
-            <button 
+            <button
               onClick={clearFilters}
               className="clear-filters-btn"
               disabled={!hasFilters && !searchTerm}
@@ -260,7 +219,7 @@ const BookCatalog = () => {
           </div>
         </div>
 
-        {/* Resultados */}
+        {/* 📚 Resultados */}
         <div className="results-section">
           <div className="results-header">
             <h3>
@@ -270,16 +229,16 @@ const BookCatalog = () => {
 
           <div className="books-grid">
             {filteredBooks.map(book => (
-              <div key={book.id} className="book-card">
+              <div key={book.id_libro || book.id} className="book-card">
                 <div className="book-image">
                   <div className="image-placeholder">
-                    {book.imagen ? (
-                      <img src={book.imagen} alt={book.titulo} />
+                    {book.link_imagen ? (
+                      <img src={`http://localhost:5000/${book.link_imagen}`} alt={book.titulo} />
                     ) : (
-                    <span>📚</span>
+                      <span>📚</span>
                     )}
                   </div>
-                  <div 
+                  <div
                     className="status-badge"
                     style={{ backgroundColor: getStatusColor(book.estatus) }}
                   >
@@ -295,7 +254,7 @@ const BookCatalog = () => {
                       <strong>Categoría:</strong> {book.categoria}
                     </span>
                     <span className="meta-item">
-                      <strong>Año:</strong> {book.año}
+                      <strong>Año:</strong> {book.fecha_publicacion?.substring(0, 4)}
                     </span>
                     <span className="meta-item">
                       <strong>Tipo:</strong> {book.tipo}
@@ -307,12 +266,15 @@ const BookCatalog = () => {
                 </div>
 
                 <div className="book-actions">
-                  <button 
-                    className={`action-btn ${book.estatus === 'Disponible' ? 'available' : 'unavailable'}`}
-                    disabled={book.estatus !== 'Disponible'}
+                  <button
+                    className={`action-btn ${book.estatus?.toLowerCase() === 'disponible' ? 'available' : 'unavailable'}`}
+                    disabled={book.estatus?.toLowerCase() !== 'disponible'}
                   >
-                    {book.estatus === 'Disponible' ? 'Reservar' : 
-                     book.estatus === 'Próximamente' ? 'Próximamente' : 'No Disponible'}
+                    {book.estatus?.toLowerCase() === 'disponible'
+                      ? 'Reservar'
+                      : book.estatus?.toLowerCase() === 'próximamente'
+                        ? 'Próximamente'
+                        : 'No Disponible'}
                   </button>
                 </div>
               </div>
