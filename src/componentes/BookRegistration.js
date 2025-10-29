@@ -183,9 +183,14 @@ const BookRegistration = () => {
       }
     }
 
-    // Validación de PDFs para libros digitales
+    // ✅ VALIDACIÓN: PDFs OBLIGATORIOS para libros digitales
     if (formData.tipo === 'digital' && pdfFiles.length === 0) {
       newErrors.pdfFiles = 'Los libros digitales requieren al menos un archivo PDF';
+    }
+
+    // ✅ VALIDACIÓN: Imagen de portada SIEMPRE OBLIGATORIA
+    if (!coverImage) {
+      newErrors.coverImage = 'La imagen de portada es obligatoria';
     }
 
     setErrors(newErrors);
@@ -438,7 +443,7 @@ const BookRegistration = () => {
                 className="file-input"
               />
               <label htmlFor="pdfFiles" className="file-label">
-                📄 Seleccionar archivos PDF
+                Seleccionar archivos PDF
               </label>
               
               {errors.pdfFiles && (
@@ -471,7 +476,9 @@ const BookRegistration = () => {
 
           {/* IMAGEN DE PORTADA */}
           <div className="form-section">
-            <h2>Imagen de Portada (Opcional)</h2>
+            <h2>
+              Imagen de Portada <span className="required">*</span>
+            </h2>
             <div className="form-group">
               <input
                 type="file"
@@ -481,7 +488,7 @@ const BookRegistration = () => {
                 className="file-input"
               />
               <label htmlFor="coverImage" className="file-label">
-                🖼️ Seleccionar imagen de portada
+                Seleccionar imagen de portada
               </label>
               
               {errors.coverImage && (
@@ -517,7 +524,7 @@ const BookRegistration = () => {
             className="submit-btn"
             disabled={isLoading}
           >
-            {isLoading ? '⏳ Registrando...' : '📚 Registrar Libro'}
+            {isLoading ? 'Registrando...' : 'Registrar Libro'}
           </button>
         </form>
       </div>
