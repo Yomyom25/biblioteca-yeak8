@@ -283,7 +283,7 @@ const LoginRegister = () => {
               </div>
 
               <div className="form-section">
-                <label className="section-label">Confirmar Contraseña *</label>
+                <label className="section-label">Confirmar Contraseña</label>
                 <input
                   type="password"
                   name="confirmPassword"

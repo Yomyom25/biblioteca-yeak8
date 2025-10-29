@@ -259,7 +259,7 @@ const BookCatalog = () => {
                       <strong>Categoría:</strong> {book.categoria}
                     </span>
                     <span className="meta-item">
-                      <strong>Año:</strong> {book.ano}
+                      <strong>Año:</strong> {book.ano !== "N/A" ? book.ano : "Sin registro"}
                     </span>
                     <span className="meta-item">
                       <strong>Tipo:</strong> {book.tipo}
