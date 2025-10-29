@@ -233,7 +233,7 @@ const LoginRegister = () => {
             <>
               {/* Campos de Registro */}
               <div className="form-section">
-                <label className="section-label">Matrícula</label>
+                <label className="section-label">Matrícula *</label>
                 <input
                   type="text"
                   name="matricula"
@@ -249,7 +249,7 @@ const LoginRegister = () => {
               </div>
 
               <div className="form-section">
-                <label className="section-label">Correo Electrónico</label>
+                <label className="section-label">Correo Electrónico *</label>
                 <input
                   type="email"
                   name="correo"
@@ -265,7 +265,7 @@ const LoginRegister = () => {
               </div>
 
               <div className="form-section">
-                <label className="section-label">Contraseña
+                <label className="section-label">Contraseña *
                   <span className="requirement">(8+ caracteres, 1 Mayúscula, 1 Número, 1 Signo)</span>
                 </label>
                 <input
@@ -283,7 +283,7 @@ const LoginRegister = () => {
               </div>
 
               <div className="form-section">
-                <label className="section-label">Confirmar Contraseña</label>
+                <label className="section-label">Confirmar Contraseña *</label>
                 <input
                   type="password"
                   name="confirmPassword"
