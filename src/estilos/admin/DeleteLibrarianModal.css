@@ -1,0 +1,91 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.warning-text {
+  color: #dc2626;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.instruction-text {
+  color: #4b5563;
+  font-size: 14px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.password-input {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #0b2b5c;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.cancel-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #e5e7eb;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #d1d5db;
+}
+
+.confirm-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #0b2b5c;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.confirm-btn:hover {
+  background-color: #153e7a;
+}
+
+.confirm-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}

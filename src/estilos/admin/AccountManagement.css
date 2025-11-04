@@ -1,0 +1,258 @@
+/* src/styles/AccountManagement.css */
+.account-management-container {
+  min-height: 100vh;
+  background-color: #0b2b5c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+}
+
+.main-card {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 900px;
+  overflow: hidden;
+}
+
+.header {
+  background-color: #0b2b5c;
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.header p {
+  font-size: 14px;
+  opacity: 0.8;
+  margin: 5px 0 0 0;
+}
+
+.tabs {
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: center;
+  background-color: #f9fafb;
+}
+
+.tab-button {
+  padding: 12px 24px;
+  border-bottom: 2px solid #0b2b5c;
+  font-weight: 500;
+  color: #0b2b5c;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+}
+
+.search-section {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-input {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 16px;
+  width: 50%;
+  font-size: 14px;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #0b2b5c;
+}
+
+.add-button {
+  background-color: #0b2b5c;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-button:hover {
+  background-color: #153e7a;
+}
+
+.table-container {
+  width: 100%;
+  border-top: 1px solid #e5e7eb;
+}
+
+.table-header {
+  background-color: #eef1f5;
+  color: #4b5563;
+  text-align: left;
+}
+
+.table-header th {
+  padding: 12px 24px;
+  font-weight: 500;
+}
+
+.table-row {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-row:hover {
+  background-color: #f9fafb;
+}
+
+.table-cell {
+  padding: 12px 24px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.modify-btn {
+  background-color: #0b2b5c;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.modify-btn:hover {
+  background-color: #153e7a;
+}
+
+.delete-btn {
+  background-color: #dc2626;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.delete-btn:hover {
+  background-color: #b91c1c;
+}
+
+.assign-btn {
+  background-color: #16a34a;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.assign-btn:hover {
+  background-color: #15803d;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.warning-text {
+  color: #dc2626;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.instruction-text {
+  color: #4b5563;
+  font-size: 14px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.password-input {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #0b2b5c;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.cancel-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #e5e7eb;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #d1d5db;
+}
+
+.confirm-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #0b2b5c;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.confirm-btn:hover {
+  background-color: #153e7a;
+}
