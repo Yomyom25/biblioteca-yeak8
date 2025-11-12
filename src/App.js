@@ -1,40 +1,56 @@
-// App.js
+// App.js (CON RUTAS PROTEGIDAS)
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Componentes principales
+// Componente de seguridad
+import RutaPrivada from "./componentes/RutaPrivada"; // 👈 IMPORTAR
+
+// Componentes
 import LoginRegister from "./componentes/LoginRegister";
 import AccountManagement from "./componentes/admin/AccountManagement";
 import BookCatalog from "./componentes/BookCatalog";
 import BookRegistration from "./componentes/BookRegistration";
 import HistorialPrestamos from "./componentes/historial/HistorialPrestamos";
-import PrestamoForm from "./componentes/prestamos/PrestamoForm"; // ✅ Nuevo formulario
+import PrestamoForm from "./componentes/prestamos/PrestamoForm";
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
-          {/* Página inicial */}
+
+          {/* 🔓 RUTA PÚBLICA (LOGIN) */}
           <Route path="/" element={<LoginRegister />} />
 
-          {/* Catálogo de libros */}
-          <Route path="/bookcatalog" element={<BookCatalog />} />
-
-          {/* Panel del administrador */}
-          <Route path="/admin/dashboard" element={<AccountManagement />} />
-
-          {/* Panel del bibliotecario */}
-          <Route path="/librarian/dashboard" element={<BookRegistration />} />
-
-          {/* Historial de préstamos */}
+          {/* 🔒 RUTAS PROTEGIDAS PARA ESTUDIANTES / GENERALES */}
           <Route
-            path="/historial-prestamos"
-            element={<HistorialPrestamos userRole="bibliotecario" />}
+            path="/bookcatalog"
+            element={<RutaPrivada><BookCatalog /></RutaPrivada>}
           />
 
-          {/* 💡 Nueva ruta para el formulario de préstamo */}
-          <Route path="/prestamo" element={<PrestamoForm />} />
+          <Route
+            path="/prestamo"
+            element={<RutaPrivada><PrestamoForm /></RutaPrivada>}
+          />
+
+          <Route
+            path="/historial-prestamos"
+            element={<RutaPrivada><HistorialPrestamos userRole="bibliotecario" /></RutaPrivada>}
+          />
+
+          {/* 🔒 RUTAS PROTEGIDAS POR ROL (ADMINISTRADOR) */}
+          <Route
+            path="/admin/dashboard"
+            element={<RutaPrivada allowedRoles={["Administrador"]}><AccountManagement /></RutaPrivada>}
+          />
+
+          {/* 🔒 RUTAS PROTEGIDAS POR ROL (BIBLIOTECARIO) */}
+          <Route
+            path="/librarian/dashboard"
+            element={<RutaPrivada allowedRoles={["Bibliotecario", "Administrador"]}><BookRegistration /></RutaPrivada>}
+          />
+
         </Routes>
       </div>
     </Router>
