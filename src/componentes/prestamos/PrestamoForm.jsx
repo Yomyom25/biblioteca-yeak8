@@ -1,46 +1,41 @@
-// src/components/PrestamoForm.js
+// src/components/PrestamoForm.js (CORREGIDO - ID DE LIBRO)
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useCatalogData } from "../../hooks/useCatalogData"; // 👈 IMPORTAR EL HOOK
-import "../../estilos/PrestamoForm.css"; // 👈 IMPORTAR ESTILOS
+import { useCatalogData } from "../../hooks/useCatalogData"; 
+import "../../estilos/PrestamoForm.css"; 
 
-// Asegúrate de que este sea el endpoint correcto para registrar un préstamo
-const API_PRESTAMO_URL = 'http://localhost:5000/api/prestamos';
+const API_PRESTAMO_URL = 'http://localhost:5000/api/loans/create'; 
 
 const PrestamoForm = () => {
     const location = useLocation();
     const navigate = useNavigate();
     
-    // 📚 Obtener datos reales del catálogo
     const { allBooks, isLoading: booksLoading, error: booksError } = useCatalogData();
-
-    // 📖 Obtener libro preseleccionado del catálogo si existe
     const { preselectedBook } = location.state || {}; 
     
-    // 👤 Obtener datos del estudiante logeado (de localStorage o sessionStorage)
-    const getStudentData = () => {
+    // 👤 Función para obtener datos y token del usuario
+    const getAuthData = () => {
         const storedData = JSON.parse(
             localStorage.getItem('userData') || 
             sessionStorage.getItem('userData') || 
             '{}'
         );
-        // Usamos la matrícula como identificador clave
         return {
-            nombre: storedData.nombre || "Usuario Desconocido", 
-            matricula: storedData.matricula || null, // Usar null para la validación
+            nombre: storedData.nombre || storedData.matricula || "Usuario Desconocido", 
+            matricula: storedData.matricula || null,
+            token: storedData.token || null,
         };
     };
 
-    const studentData = getStudentData();
+    const authData = getAuthData();
 
     // === Lógica de Fechas ===
     const getDefaultDates = () => {
         const today = new Date();
         const future = new Date();
-        future.setDate(today.getDate() + 21); // 21 días de plazo máximo
+        future.setDate(today.getDate() + 21);
         
-        // Formato YYYY-MM-DD
         const toISO = (date) => date.toISOString().split("T")[0]; 
 
         return {
@@ -54,7 +49,7 @@ const PrestamoForm = () => {
     
     // === Estados del Formulario ===
     const [selectedBooks, setSelectedBooks] = useState(
-        preselectedBook ? [preselectedBook] : [] // Inicializar con el libro preseleccionado
+        preselectedBook ? [preselectedBook] : []
     );
     
     const [removingBook, setRemovingBook] = useState(null);
@@ -67,16 +62,13 @@ const PrestamoForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState(null);
 
-    // === Validaciones y Lógica de UI ===
-
-    // Filtrar libros disponibles (no seleccionados y con ejemplares > 0)
+    const maxBooksReached = selectedBooks.length >= 2;
+    
     const filteredBooks = allBooks.filter((book) =>
         (book.titulo.toLowerCase().includes(searchTerm.toLowerCase()) || 
          book.autor.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        !selectedBooks.some(sBook => sBook.id === book.id) // Excluir libros ya seleccionados
-    ).slice(0, 5); // Mostrar máximo 5 resultados en el dropdown
-    
-    const maxBooksReached = selectedBooks.length >= 2;
+        !selectedBooks.some(sBook => sBook.id === book.id)
+    ).slice(0, 5); 
 
     const handleBookClick = (book) => {
         if (!maxBooksReached) {
@@ -86,7 +78,6 @@ const PrestamoForm = () => {
         }
     };
     
-    // Animación de eliminación suave
     const removeBook = (bookToRemove) => {
         setRemovingBook(bookToRemove.titulo);
         setTimeout(() => {
@@ -118,13 +109,11 @@ const PrestamoForm = () => {
 
         const start = new Date(newStartDate);
         const end = new Date(newEndDate);
-        const diff = (end - start) / (1000 * 60 * 60 * 24); // Diferencia en días
+        const diff = (end - start) / (1000 * 60 * 60 * 24); 
         
-        // Validación de plazo máximo de 21 días
         setDateAlert(diff > 21 || diff < 0); 
     };
 
-    // Efecto para expandir/colapsar la tarjeta de libros seleccionados
     useEffect(() => {
         if (selectedBooks.length > 0) {
             setTimeout(() => setIsExpanded(true), 100);
@@ -133,46 +122,84 @@ const PrestamoForm = () => {
         }
     }, [selectedBooks]);
 
-    // 📤 Función para Confirmar Préstamo
+
+    // 📤 Función para Confirmar Préstamo (CORREGIDA)
     const handleConfirmLoan = async () => {
-        // Validaciones finales antes de enviar
-        if (maxBooksReached && selectedBooks.length === 0) return;
-        if (dateAlert) return;
-        if (!studentData.matricula) {
-            setSubmitError("No se pudo obtener la matrícula del estudiante. Por favor, vuelve a iniciar sesión.");
+        
+        if (selectedBooks.length === 0 || dateAlert || !authData.matricula) return;
+
+        if (!authData.token) {
+            setSubmitError("⚠️ Error: No se encontró el token de seguridad. Por favor, vuelve a iniciar sesión.");
             return;
         }
 
-        const loanData = {
-            usuario_matricula: studentData.matricula, 
-            libros_ids: selectedBooks.map(book => book.id),
-            fecha_prestamo: startDate,
-            fecha_limite: endDate,
-        };
-        
+        console.log("🔍 DEBUG - Datos de autenticación:", authData);
+        console.log("🔍 DEBUG - Libros seleccionados:", selectedBooks);
+
         setIsSubmitting(true);
         setSubmitError(null);
 
-        try {
-            const response = await axios.post(API_PRESTAMO_URL, loanData);
+        const successfulLoans = [];
+        const failedLoans = [];
+
+        for (const book of selectedBooks) {
             
-            // Éxito
-            console.log("✅ Préstamo confirmado:", response.data);
-            alert(`Préstamo creado exitosamente: ${response.data.message || ''}`);
-            handleClear(); // Limpiar el formulario después de la confirmación
-            navigate('/dashboard'); // Redirigir al dashboard/perfil
-        } catch (error) {
-            // Manejo de errores de la API
-            console.error("❌ Error al confirmar el préstamo:", error.response || error);
-            const errorMessage = error.response?.data?.message || 'Error de conexión con el servidor de préstamos.';
-            setSubmitError(errorMessage);
-        } finally {
-            setIsSubmitting(false);
+            // ✅ CORRECCIÓN CRÍTICA: Asegurar que enviamos el ID correcto
+            const loanData = {
+                matricula: authData.matricula,
+                bookId: book.id, // Tu hook mapea id_libro a 'id'
+                dueDate: endDate,
+            };
+            
+            console.log("📤 Enviando préstamo:", loanData);
+            
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${authData.token}`
+                }
+            };
+
+            try {
+                const response = await axios.post(API_PRESTAMO_URL, loanData, config);
+                console.log("✅ Respuesta exitosa:", response.data);
+                successfulLoans.push(book.titulo);
+            } catch (error) {
+              console.log("📚 id enviado al backend:", book.id);
+                // ✅ MEJORADO: Mostrar más detalles del error
+                console.error(`❌ Error completo:`, error);
+                console.error(`❌ Response:`, error.response);
+                console.error(`❌ Status:`, error.response?.status);
+                console.error(`❌ Data:`, error.response?.data);
+                
+                const errorMessage = error.response?.data?.message || 
+                                   `Error ${error.response?.status || 'desconocido'}: ${error.message}`;
+                
+                failedLoans.push({ bookTitle: book.titulo, error: errorMessage });
+            }
+        }
+        
+        setIsSubmitting(false);
+
+        if (failedLoans.length === 0) {
+            alert(`✅ Préstamos registrados exitosamente: ${successfulLoans.join(' y ')}.`);
+            handleClear(); 
+            navigate('/bookcatalog');
+        } else {
+            let summaryMessage = `🚨 ERROR. No se pudieron registrar ${failedLoans.length} de ${selectedBooks.length} préstamos.\n\n`;
+            failedLoans.forEach(f => {
+                summaryMessage += `- Libro: ${f.bookTitle}\n  Razón: ${f.error}\n\n`;
+            });
+            
+            setSubmitError(summaryMessage);
+            
+            if (successfulLoans.length > 0) {
+                alert(`✅ Advertencia: Préstamo(s) parcial(es) exitoso(s): ${successfulLoans.join(', ')}. Revise los errores.`);
+                setSelectedBooks(selectedBooks.filter(b => !successfulLoans.includes(b.titulo)));
+            }
         }
     };
 
 
-    // 🛑 Manejo de estados de Carga y Error del Catálogo
     if (booksLoading) {
         return <div className="loan-loading-screen">Cargando catálogo de libros disponibles...</div>;
     }
@@ -181,7 +208,6 @@ const PrestamoForm = () => {
         return <div className="loan-error-screen">Error de Carga: {booksError}</div>;
     }
 
-    // El catálogo está cargado y no hay errores
     return (
         <div className="app-background">
             <div className="loan-container">
@@ -190,16 +216,14 @@ const PrestamoForm = () => {
                     <p>Completa el formulario para registrar el préstamo de libros</p>
                 </div>
 
-                {/* Mensaje de error general del envío */}
                 {submitError && (
                     <div className="alert-box error-alert slide-in">
                         <span className="alert-icon">🛑</span>
-                        <span>{submitError}</span>
+                        <pre style={{whiteSpace: 'pre-wrap', fontSize: '12px'}}>{submitError}</pre>
                     </div>
                 )}
 
                 <div className="loan-body">
-                    {/* === Columna Izquierda: Datos del Préstamo === */}
                     <div className="loan-column">
                         <h3>Datos del Usuario</h3>
 
@@ -207,7 +231,7 @@ const PrestamoForm = () => {
                             <label>Nombre del Estudiante</label>
                             <input 
                                 type="text" 
-                                value={studentData.nombre} 
+                                value={authData.nombre} 
                                 readOnly 
                                 disabled
                                 className="read-only"
@@ -218,17 +242,16 @@ const PrestamoForm = () => {
                             <label>Matrícula</label>
                             <input 
                                 type="text" 
-                                value={studentData.matricula || 'N/A'} 
+                                value={authData.matricula || 'N/A'} 
                                 readOnly 
                                 disabled
                                 className="read-only"
                             />
-                             {!studentData.matricula && (
+                            {!authData.matricula && (
                                 <p className="error-text">⚠️ No se encontró la matrícula. No se puede proceder con el préstamo.</p>
                             )}
                         </div>
 
-                        {/* === Fechas === */}
                         <h3>Fechas</h3>
                         <div className="date-fields">
                             <div className="field date-field">
@@ -250,7 +273,6 @@ const PrestamoForm = () => {
                                 />
                             </div>
                         </div>
-                         {/* Alerta de validación de fechas */}
                         {dateAlert && (
                             <div className="alert-box warning-alert slide-in">
                                 <span>La duración del préstamo no puede exceder 3 semanas ni ser negativa</span>
@@ -258,7 +280,6 @@ const PrestamoForm = () => {
                         )}
                     </div>
 
-                    {/* === Columna Derecha: Selección de Libros === */}
                     <div className="loan-column">
                         <div className="field search-field">
                             <label>
@@ -274,17 +295,16 @@ const PrestamoForm = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 onFocus={() => setShowDropdown(true)}
                                 onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-                                disabled={maxBooksReached || booksLoading || studentData.matricula === null}
+                                disabled={maxBooksReached || booksLoading || authData.matricula === null}
                             />
 
-                            {/* Dropdown de Sugerencias */}
                             {showDropdown && !maxBooksReached && (
                                 <ul className="book-dropdown">
                                     {filteredBooks.length > 0 ? (
                                         filteredBooks.map((book) => (
                                             <li 
                                                 key={book.id} 
-                                                onMouseDown={() => handleBookClick(book)} // Usar onMouseDown para evitar el onBlur
+                                                onMouseDown={() => handleBookClick(book)}
                                             >
                                                 {book.titulo} (por {book.autor}) - Disp: {book.ejemplares}
                                             </li>
@@ -297,7 +317,6 @@ const PrestamoForm = () => {
 
                         </div>
 
-                        {/* === Lista de Libros Seleccionados === */}
                         <div className="field">
                             <label>Libros a Prestar</label>
                             <div className={`book-card-container ${isExpanded ? "expanded" : ""}`}>
@@ -332,7 +351,6 @@ const PrestamoForm = () => {
                     </div>
                 </div>
 
-                {/* === Botones de Acción === */}
                 <div className="button-group">
                     <button className="btn cancel" onClick={handleCancel}>
                         Volver al Catálogo
@@ -343,8 +361,7 @@ const PrestamoForm = () => {
                     <button
                         className="btn confirm"
                         onClick={handleConfirmLoan}
-                        // Deshabilitar si: cargando, sin libros, alerta de fecha, o sin matrícula
-                        disabled={selectedBooks.length === 0 || dateAlert || !studentData.matricula || isSubmitting}
+                        disabled={selectedBooks.length === 0 || dateAlert || !authData.matricula || isSubmitting}
                     >
                         {isSubmitting ? "Confirmando..." : "Confirmar Préstamo"}
                     </button>
