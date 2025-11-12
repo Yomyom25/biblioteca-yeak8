@@ -1,4 +1,4 @@
-// useAuth.js
+// useAuth.js (CORREGIDO)
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -73,6 +73,7 @@ const useAuth = () => {
     setMessage("");
   }, []);
 
+
   // --- SUBMIT: LOGIN / REGISTRO ---
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,10 +115,14 @@ const useAuth = () => {
 
         if (response.data?.success || response.data?.token) {
           const user = response.data.user || {};
+
           const userData = {
             id: user.id || user.id_usuario,
-            nombre: user.nombre || "",
-            matricula: user.matricula || "",
+            nombre: user.nombre || "Estudiante", // Fallback a "Estudiante" en lugar de ""
+
+            // 💡 CORRECCIÓN CLAVE: Si el backend no devuelve matricula, usa la que el usuario ingresó.
+            matricula: user.matricula || formData.matricula,
+
             correo: user.correo || "",
             rol: user.rol || response.data.rol || "Estudiante",
             token: response.data.token,
@@ -201,6 +206,19 @@ const useAuth = () => {
     }
   };
 
+  // 🆕 FUNCIÓN DE CERRAR SESIÓN
+    const handleLogout = useCallback(() => {
+        // 1. Limpiar los datos de la sesión del usuario
+        localStorage.removeItem('userData');
+        sessionStorage.removeItem('userData'); 
+        
+        // 2. Redirigir al usuario a la página de inicio de sesión
+        // 💡 REDIRECCIÓN A LA RUTA PRINCIPAL DE LOGIN
+        navigate('/'); 
+        
+        console.log("Sesión cerrada exitosamente.");
+    }, [navigate]); // navigate es una dependencia para useCallback
+
   return {
     // Estados
     isLogin,
@@ -219,6 +237,7 @@ const useAuth = () => {
     handleBackToLogin,
     handleSubmit,
     handleRecoverySubmit,
+    handleLogout,
   };
 };
 

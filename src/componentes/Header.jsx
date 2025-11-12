@@ -1,11 +1,11 @@
+// src/componentes/Header.js (Final)
 import React from 'react';
+import useAuth from '../hooks/useAuth'; // 👈 IMPORTAR EL HOOK
 import '../estilos/Header.css';
 
 const Header = () => {
-    const handleLogout = () => {
-        // Aquí iría la lógica real de cerrar sesión (ej. limpiar tokens, redirigir)
-        alert('Cerrando sesión...');
-    };
+    // 💡 Obtener la función de cierre de sesión del hook
+    const { handleLogout } = useAuth();
 
     return (
         <header className="main-header">
@@ -14,7 +14,8 @@ const Header = () => {
             </div>
             <button
                 className="logout-button"
-                onClick={handleLogout}
+                // 💡 Asignar la función handleLogout al evento onClick
+                onClick={handleLogout} 
             >
                 Cerrar Sesión
             </button>
