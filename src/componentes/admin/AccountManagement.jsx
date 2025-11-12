@@ -1,85 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import '../../estilos/admin/AccountManagement.css';
 import LibrarianList from './LibrarianList';
 import AddLibrarianModal from './AddLibrarianModal';
 import EditLibrarianModal from './EditLibrarianModal';
 import DeleteLibrarianModal from './DeleteLibrarianModal';
 import Header from '../Header';
-import { useLibrarianManagement } from '../../hooks/useLibrarianManagement'; 
 
 const AccountManagement = () => {
-    // 🪝 Usar el hook para las operaciones de API
-    const { 
-        fetchLibrariansApi, // 🔑 Función para cargar la lista
-        addLibrarianApi, 
-        loading: apiLoading, 
-        error: apiError, 
-    } = useLibrarianManagement();
+    const [librarians, setLibrarians] = useState([
+        { id: 1, nombre: "Ana García", email: "ana.garcia@biblioteca.org" }, // Eliminado 'usuario'
+        { id: 2, nombre: "Carlos López", email: "carlos@biblioteca.org" },   // Eliminado 'usuario'
+        { id: 3, nombre: "Pedro Sánchez", email: "pedro@biblioteca.org" },   // Eliminado 'usuario'
+        { id: 4, nombre: "María Rodríguez", email: "maria@biblioteca.org" }, // Eliminado 'usuario'
+        { id: 5, nombre: "Hibslier Dostowdsski", email: "hibslier@biblioteca.org" }, // Eliminado 'usuario'
+    ]);
 
-    // 🛑 Iniciamos con un array vacío, los datos se cargarán con useEffect
-    const [librarians, setLibrarians] = useState([]);
-    
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedLibrarian, setSelectedLibrarian] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [notification, setNotification] = useState({ message: '', type: '' });
-
-    // 🔑 useEffect para cargar la lista inicial de bibliotecarios al montar el componente
-    useEffect(() => {
-        const loadLibrarians = async () => {
-            const result = await fetchLibrariansApi();
-            if (result.success) {
-                setLibrarians(result.data);
-            }
-            // Los errores se gestionan mediante el estado 'apiError' del hook
-        };
-        loadLibrarians();
-    }, []); 
-
-    // Efecto para mostrar errores de la API que no están ligados a un modal específico
-    useEffect(() => {
-        if (apiError) {
-            setNotification({ message: apiError, type: 'error' });
-        }
-    }, [apiError]);
 
     // Filtrar bibliotecarios según búsqueda
     const filteredLibrarians = librarians.filter(librarian =>
-        (librarian.nombre?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (librarian.email?.toLowerCase().includes(searchTerm.toLowerCase()))
+        librarian.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        librarian.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // 🚀 FUNCIÓN ASÍNCRONA PARA AGREGAR BIBLIOTECARIO
-    const addLibrarian = async (newLibrarian) => {
-        const { nombre, email, password } = newLibrarian;
-        const matricula = email; // Usamos email como matrícula para unicidad
-
-        // Limpiamos notificaciones previas
-        setNotification({ message: '', type: '' });
-
-        const { success, message, newLibrarian: newLibrarianData } = await addLibrarianApi({
-            matricula,
-            nombre,
-            email,
-            password,
-        });
-
-        if (success) {
-            // La API fue exitosa: actualizamos el estado local
-            setLibrarians((prevLibrarians) => [...prevLibrarians, newLibrarianData]);
-            setNotification({ message, type: 'success' });
-            closeModals();
-        } else {
-            // La API falló: mostramos el mensaje de error del backend
-            setNotification({ message, type: 'error' });
-        }
+    // CRUD Operations
+    const addLibrarian = (newLibrarian) => {
+        const { password, confirmPassword, ...librarianData } = newLibrarian;
+        const newId = Math.max(...librarians.map(l => l.id)) + 1;
+        setLibrarians([...librarians, { ...librarianData, id: newId }]);
     };
 
-    // CRUD Operations (Mantienen lógica local, deben ser actualizadas para interactuar con la API)
     const updateLibrarian = (updatedLibrarian) => {
-        // Lógica pendiente de integración con API
         const { usuario, ...dataToUpdate } = updatedLibrarian;
         setLibrarians(librarians.map(lib =>
             lib.id === dataToUpdate.id ? dataToUpdate : lib
@@ -87,7 +42,6 @@ const AccountManagement = () => {
     };
 
     const deleteLibrarian = (id) => {
-        // Lógica pendiente de integración con API
         setLibrarians(librarians.filter(lib => lib.id !== id));
     };
 
@@ -109,10 +63,6 @@ const AccountManagement = () => {
         setShowEditModal(false);
         setShowDeleteModal(false);
         setSelectedLibrarian(null);
-        // Limpiar notificación solo si el modal se cierra por una razón que no sea un error.
-        if (notification.type === 'success' || !notification.message) {
-             setNotification({ message: '', type: '' });
-        }
     };
 
     return (
@@ -129,14 +79,6 @@ const AccountManagement = () => {
                         <button className="tab-button">Bibliotecarios</button>
                     </div>
 
-                    {/* Sección de Notificación/Alerta */}
-                    {apiLoading && <div className="api-status loading">🔄 Cargando datos...</div>}
-                    {notification.message && (
-                        <div className={`api-status ${notification.type}`}>
-                            {notification.type === 'success' ? '✅ Éxito: ' : '❌ Error: '} {notification.message}
-                        </div>
-                    )}
-
                     <div className="search-section">
                         <input
                             type="text"
@@ -149,10 +91,6 @@ const AccountManagement = () => {
                             Agregar Bibliotecario
                         </button>
                     </div>
-                    
-                    {librarians.length === 0 && !apiLoading && !apiError && (
-                        <p className="no-data-message">No hay bibliotecarios registrados o no se han cargado datos.</p>
-                    )}
 
                     <LibrarianList
                         librarians={filteredLibrarians}
