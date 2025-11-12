@@ -7,7 +7,6 @@ const LibrarianList = ({ librarians, onEdit, onDelete }) => {
       <thead>
         <tr className="table-header">
           <th>Nombre</th>
-          <th>Usuario</th>
           <th>Email</th>
           <th className="text-center">Acciones</th>
         </tr>
@@ -16,7 +15,6 @@ const LibrarianList = ({ librarians, onEdit, onDelete }) => {
         {librarians.map((librarian) => (
           <tr key={librarian.id} className="table-row">
             <td className="table-cell">{librarian.nombre}</td>
-            <td className="table-cell">{librarian.usuario}</td>
             <td className="table-cell">{librarian.email}</td>
             <td className="table-cell text-center">
               <div className="action-buttons">
@@ -31,9 +29,6 @@ const LibrarianList = ({ librarians, onEdit, onDelete }) => {
                   className="delete-btn"
                 >
                   Eliminar
-                </button>
-                <button className="assign-btn">
-                  Asignar
                 </button>
               </div>
             </td>

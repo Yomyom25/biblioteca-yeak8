@@ -7,11 +7,11 @@ import DeleteLibrarianModal from './DeleteLibrarianModal';
 
 const AccountManagement = () => {
   const [librarians, setLibrarians] = useState([
-    { id: 1, nombre: "Ana García", usuario: "ana.garcia", email: "ana.garcia@biblioteca.org" },
-    { id: 2, nombre: "Carlos López", usuario: "carlos.lopez", email: "carlos@biblioteca.org" },
-    { id: 3, nombre: "Pedro Sánchez", usuario: "pedro.sanchez", email: "pedro@biblioteca.org" },
-    { id: 4, nombre: "María Rodríguez", usuario: "maria.rodriguez", email: "maria@biblioteca.org" },
-    { id: 5, nombre: "Hibslier Dostowdsski", usuario: "hibslier.d", email: "hibslier@biblioteca.org" },
+    { id: 1, nombre: "Ana García", email: "ana.garcia@biblioteca.org" }, // Eliminado 'usuario'
+    { id: 2, nombre: "Carlos López", email: "carlos@biblioteca.org" },   // Eliminado 'usuario'
+    { id: 3, nombre: "Pedro Sánchez", email: "pedro@biblioteca.org" },   // Eliminado 'usuario'
+    { id: 4, nombre: "María Rodríguez", email: "maria@biblioteca.org" }, // Eliminado 'usuario'
+    { id: 5, nombre: "Hibslier Dostowdsski", email: "hibslier@biblioteca.org" }, // Eliminado 'usuario'
   ]);
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -23,19 +23,20 @@ const AccountManagement = () => {
   // Filtrar bibliotecarios según búsqueda
   const filteredLibrarians = librarians.filter(librarian =>
     librarian.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    librarian.usuario.toLowerCase().includes(searchTerm.toLowerCase()) ||
     librarian.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // CRUD Operations
   const addLibrarian = (newLibrarian) => {
+const { password, confirmPassword, ...librarianData } = newLibrarian;
     const newId = Math.max(...librarians.map(l => l.id)) + 1;
-    setLibrarians([...librarians, { ...newLibrarian, id: newId }]);
+    setLibrarians([...librarians, { ...librarianData, id: newId }]);
   };
 
   const updateLibrarian = (updatedLibrarian) => {
+const { usuario, ...dataToUpdate } = updatedLibrarian; 
     setLibrarians(librarians.map(lib => 
-      lib.id === updatedLibrarian.id ? updatedLibrarian : lib
+      lib.id === dataToUpdate.id ? dataToUpdate : lib
     ));
   };
 

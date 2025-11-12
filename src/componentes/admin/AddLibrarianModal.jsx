@@ -4,8 +4,9 @@ import '../../estilos/admin/AddLibrarianModal.css';
 const AddLibrarianModal = ({ onClose, onSave }) => {
   const [formData, setFormData] = useState({
     nombre: '',
-    usuario: '',
-    email: ''
+    email: '',
+    password: '', // Campo para la contraseña
+    confirmPassword: '' // Campo para confirmar la contraseña
   });
 
   const handleChange = (e) => {
@@ -17,6 +18,14 @@ const AddLibrarianModal = ({ onClose, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Validación de coincidencia de contraseñas
+    if (formData.password !== formData.confirmPassword) {
+        alert('Las contraseñas no coinciden. Por favor, revísalas.');
+        return;
+    }
+    
+    // Si coinciden, llamar a onSave
     onSave(formData);
     onClose();
   };
@@ -36,22 +45,33 @@ const AddLibrarianModal = ({ onClose, onSave }) => {
               required
             />
           </div>
-          <div className="form-group">
-            <label>Usuario:</label>
-            <input
-              type="text"
-              name="usuario"
-              value={formData.usuario}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          {/* Campo 'Usuario' eliminado */}
           <div className="form-group">
             <label>Email:</label>
             <input
               type="email"
               name="email"
               value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Contraseña:</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Confirmar Contraseña:</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
               onChange={handleChange}
               required
             />

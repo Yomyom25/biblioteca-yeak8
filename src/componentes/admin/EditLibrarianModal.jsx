@@ -4,7 +4,6 @@ import '../../estilos/admin/EditLibrarianModal.css';
 const EditLibrarianModal = ({ librarian, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     nombre: '',
-    usuario: '',
     email: ''
   });
 
@@ -12,7 +11,6 @@ const EditLibrarianModal = ({ librarian, onClose, onSave }) => {
     if (librarian) {
       setFormData({
         nombre: librarian.nombre,
-        usuario: librarian.usuario,
         email: librarian.email
       });
     }
@@ -42,16 +40,6 @@ const EditLibrarianModal = ({ librarian, onClose, onSave }) => {
               type="text"
               name="nombre"
               value={formData.nombre}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Usuario:</label>
-            <input
-              type="text"
-              name="usuario"
-              value={formData.usuario}
               onChange={handleChange}
               required
             />
