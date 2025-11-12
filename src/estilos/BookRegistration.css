@@ -226,6 +226,42 @@ select.error {
   display: block;
 }
 
+/* Estilos para el botón centrado */
+
+/* [MODIFICADO] ELIMINADO EL BLOQUE .registration-header QUE CAUSABA CONFLICTO */
+
+/* [AGREGADO] NUEVO CONTENEDOR PARA CENTRAR EL BOTÓN */
+.history-btn-wrapper {
+  text-align: center;
+  padding: 20px 0 30px 0; /* Espacio arriba, abajo y para separarlo de los mensajes/formulario */
+}
+
+/* Estilo del botón de Historial de Préstamos */
+.history-btn {
+  padding: 10px 20px;
+  background-color: #3b5998; /* Un color azul diferente para distinguirlo */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-decoration: none; /* Asegurar que no tenga subrayado si se convierte en link */
+  display: inline-block; /* NECESARIO para que 'text-align: center' del wrapper funcione */
+}
+
+.history-btn:hover {
+  background-color: #2d4373;
+  transform: translateY(-1px);
+}
+
+.history-btn:active {
+  transform: translateY(0);
+}
+
+
 .image-preview .remove-btn {
   position: absolute;
   top: -8px;

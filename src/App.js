@@ -1,37 +1,40 @@
 // App.js
-import React from 'react';
-// 💡 Importar los componentes necesarios para las rutas
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Componentes
-import LoginRegister from './componentes/LoginRegister';
-import AccountManagement from './componentes/admin/AccountManagement'; 
-import BookCatalog from './componentes/BookCatalog';
-import BookRegistration from './componentes/BookRegistration'; 
-
+// Componentes principales
+import LoginRegister from "./componentes/LoginRegister";
+import AccountManagement from "./componentes/admin/AccountManagement";
+import BookCatalog from "./componentes/BookCatalog";
+import BookRegistration from "./componentes/BookRegistration";
+import HistorialPrestamos from "./componentes/historial/HistorialPrestamos";
+import PrestamoForm from "./componentes/prestamos/PrestamoForm"; // ✅ Nuevo formulario
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
-          {/* Ruta de inicio por defecto: Login/Registro */}
-          <Route path="/" element={<LoginRegister />} /> 
-          
-          {/* 🚀 RUTAS CRÍTICAS PARA LA REDIRECCIÓN 🚀 */}
-          
-          {/* Ruta para el Estudiante */}
+          {/* Página inicial */}
+          <Route path="/" element={<LoginRegister />} />
+
+          {/* Catálogo de libros */}
           <Route path="/bookcatalog" element={<BookCatalog />} />
-          
-          {/* Ruta para el Administrador */}
+
+          {/* Panel del administrador */}
           <Route path="/admin/dashboard" element={<AccountManagement />} />
 
-          {/* Ruta para el Bibliotecario (Usando BookRegistration como ejemplo) */}
+          {/* Panel del bibliotecario */}
           <Route path="/librarian/dashboard" element={<BookRegistration />} />
 
-          {/* Puedes agregar rutas para errores 404 aquí si quieres */}
-          {/* <Route path="*" element={<div>404 Not Found</div>} /> */}
+          {/* Historial de préstamos */}
+          <Route
+            path="/historial-prestamos"
+            element={<HistorialPrestamos userRole="bibliotecario" />}
+          />
 
+          {/* 💡 Nueva ruta para el formulario de préstamo */}
+          <Route path="/prestamo" element={<PrestamoForm />} />
         </Routes>
       </div>
     </Router>

@@ -1,0 +1,36 @@
+/* Header.css */
+
+.main-header {
+    /* Usar Flexbox para alinear elementos horizontalmente */
+    display: flex;
+    /* Centrar verticalmente los elementos (título y botón) */
+    align-items: center;
+    /* Distribuir el espacio: el título a la izquierda, el botón a la derecha */
+    justify-content: space-between;
+    
+    padding: 10px 20px;
+    background-color: #3f51b5; /* Un color primario (ej. azul) */
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-title h1 {
+    margin: 0; /* Elimina el margen por defecto del h1 */
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+.logout-button {
+    padding: 8px 15px;
+    background-color: #ff5252; /* Color de advertencia (rojo) */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #f04444;
+}

@@ -1,8 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import "../../estilos/PrestamoForm.css";
 
 const PrestamoForm = () => {
-  const studentData = {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // 📖 Obtener datos pasados desde el catálogo
+  const { preselectedBook, userData: passedUserData } = location.state || {};
+  
+  // 👤 Datos del estudiante (priorizar los pasados, luego localStorage/sessionStorage)
+  const storedUserData = JSON.parse(
+    localStorage.getItem('userData') || 
+    sessionStorage.getItem('userData') || 
+    '{}'
+  );
+  
+  const studentData = passedUserData || storedUserData || {
     nombre: "YOMARA EUAN",
     matricula: "E20080935",
   };
@@ -18,7 +32,12 @@ const PrestamoForm = () => {
   };
 
   const defaultDates = getDefaultDates();
-  const [selectedBooks, setSelectedBooks] = useState([]);
+  
+  // 📚 Inicializar con el libro preseleccionado si existe
+  const [selectedBooks, setSelectedBooks] = useState(
+    preselectedBook ? [preselectedBook.titulo] : []
+  );
+  
   const [removingBook, setRemovingBook] = useState(null);
   const [bookList] = useState([
     "El Principito",
@@ -43,10 +62,12 @@ const PrestamoForm = () => {
   const [dateAlert, setDateAlert] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(preselectedBook ? true : false);
 
+  // 🔍 Filtrar libros (excluir los ya seleccionados)
   const filteredBooks = bookList.filter((book) =>
-    book.toLowerCase().includes(searchTerm.toLowerCase())
+    book.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    !selectedBooks.includes(book)
   );
 
   const handleBookClick = (book) => {
@@ -64,6 +85,11 @@ const PrestamoForm = () => {
     setEndDate(reset.end);
     setDateAlert(false);
     setSearchTerm("");
+  };
+
+  const handleCancel = () => {
+    // Regresar al catálogo
+  navigate('/bookcatalog')
   };
 
   const handleDateChange = (type, value) => {
@@ -90,8 +116,15 @@ const PrestamoForm = () => {
     setTimeout(() => {
       setSelectedBooks((prev) => prev.filter((b) => b !== book));
       setRemovingBook(null);
-    }, 300); // mismo tiempo que la animación en CSS
+    }, 300);
   };
+
+  // 📢 Mostrar mensaje si viene de una reserva
+  useEffect(() => {
+    if (preselectedBook) {
+      console.log(`📚 Libro preseleccionado: ${preselectedBook.titulo}`);
+    }
+  }, [preselectedBook]);
 
   return (
     <div className="app-background">
@@ -102,6 +135,28 @@ const PrestamoForm = () => {
         <div className="loan-header">
           <h2>Gestión de Préstamos</h2>
           <p>Administra los préstamos y reservas de libros</p>
+          
+          {/* 🎉 Mensaje de libro preseleccionado */}
+          {preselectedBook && (
+            <div style={{
+              backgroundColor: '#e3f2fd',
+              border: '1px solid #90caf9',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              marginTop: '12px',
+              fontSize: '0.9rem',
+              color: '#1976d2',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              animation: 'slideIn 0.5s ease-out'
+            }}>
+              <span style={{ fontSize: '1.2rem' }}>📖</span>
+              <span>
+                Has seleccionado: <strong>{preselectedBook.titulo}</strong> por {preselectedBook.autor}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="loan-body">
@@ -127,7 +182,7 @@ const PrestamoForm = () => {
 
             {selectedBooks.length === 2 && (
               <div className="alert-box slide-in">
-                <span className="alert-icon">⚠︎</span>
+                <span className="alert-icon">⚠️</span>
                 <span>Máximo de libros alcanzado.</span>
               </div>
             )}
@@ -136,16 +191,33 @@ const PrestamoForm = () => {
           {/* === Columna Derecha === */}
           <div className="loan-column">
             <div className="field">
-              <label>Buscar y Seleccionar Libro</label>
+              <label>
+                Buscar y Seleccionar Libro
+                {selectedBooks.length > 0 && (
+                  <span style={{ color: '#0b3361', fontWeight: 'normal' }}>
+                    {' '}({2 - selectedBooks.length} disponible{2 - selectedBooks.length !== 1 ? 's' : ''})
+                  </span>
+                )}
+              </label>
               <input
                 type="text"
-                placeholder="Escribe el título del libro..."
+                placeholder={
+                  selectedBooks.length >= 2 
+                    ? "Máximo alcanzado" 
+                    : "Escribe el título del libro..."
+                }
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onFocus={() => setShowDropdown(true)}
+                onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                disabled={selectedBooks.length >= 2}
+                style={{
+                  backgroundColor: selectedBooks.length >= 2 ? '#f5f5f5' : 'white',
+                  cursor: selectedBooks.length >= 2 ? 'not-allowed' : 'text'
+                }}
               />
 
-              {showDropdown && filteredBooks.length > 0 && (
+              {showDropdown && filteredBooks.length > 0 && selectedBooks.length < 2 && (
                 <ul className="book-dropdown">
                   {filteredBooks.map((book, index) => (
                     <li key={index} onClick={() => handleBookClick(book)}>
@@ -155,7 +227,7 @@ const PrestamoForm = () => {
                 </ul>
               )}
 
-              {showDropdown && searchTerm && filteredBooks.length === 0 && (
+              {showDropdown && searchTerm && filteredBooks.length === 0 && selectedBooks.length < 2 && (
                 <div className="no-results">No se encontró ningún libro</div>
               )}
             </div>
@@ -178,6 +250,7 @@ const PrestamoForm = () => {
                     <button
                       className="remove-btn"
                       onClick={() => removeBook(book)}
+                      title="Eliminar libro"
                     >
                       ✖
                     </button>
@@ -204,7 +277,7 @@ const PrestamoForm = () => {
 
               {dateAlert && (
                 <div className="alert-box slide-in">
-                  <span className="alert-icon">⏱︎</span>
+                  <span className="alert-icon">⏱️</span>
                   <span>
                     El préstamo no puede exceder 3 semanas. Ajusta las fechas.
                   </span>
@@ -216,13 +289,15 @@ const PrestamoForm = () => {
 
         {/* === Botones === */}
         <div className="button-group">
-          <button className="btn cancel" onClick={handleClear}>
+          <button className="btn cancel" onClick={handleCancel}>
             Cancelar
           </button>
           <button className="btn clear" onClick={handleClear}>
             Limpiar
           </button>
-          <button className="btn reserve">Reservar Libro</button>
+          <button className="btn reserve" onClick={() => navigate('/catalogo')}>
+            Volver al Catálogo
+          </button>
           <button
             className="btn confirm"
             disabled={selectedBooks.length === 0 || dateAlert}

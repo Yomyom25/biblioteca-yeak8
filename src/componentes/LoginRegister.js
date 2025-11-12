@@ -1,10 +1,12 @@
-// LoginRegister.js (COMPLETO Y MODIFICADO)
+// LoginRegister.js (COMPLETO Y MODIFICADO CON GUARDADO DE DATOS)
 
 import React from "react";
+import { useNavigate } from "react-router-dom"; // 👈 Agregar esto
 import useAuth from "../hooks/useAuth"; 
 import "../estilos/LoginRegister.css";
 
 const LoginRegister = () => {
+  const navigate = useNavigate(); // 👈 Agregar esto
   
   const {
     isLogin,
@@ -22,7 +24,7 @@ const LoginRegister = () => {
     handleBackToLogin,
     handleSubmit,
     handleRecoverySubmit,
-  } = useAuth(); // ⬅️ USAR EL HOOK
+  } = useAuth();
 
   // ----------------------------------------------------------------
   // PANTALLA DE RECUPERACIÓN (AJUSTADA PARA MATRÍCULA O CORREO)
@@ -71,16 +73,16 @@ const LoginRegister = () => {
                 <div className="input-group recovery-input">
                   <div className="input-icon">🔑</div>
                   <input
-                    type="text" // Cambiado de 'email' a 'text' para aceptar matrículas
-                    name="recoveryInput" // CAMBIO CLAVE: Usamos el campo único
+                    type="text"
+                    name="recoveryInput"
                     value={formData.recoveryInput} 
                     onChange={handleChange}
-                    className={errors.recoveryInput ? "error" : ""} // Error para el campo único
-                    placeholder="Matrícula o Correo Electrónico" // Placeholder descriptivo
+                    className={errors.recoveryInput ? "error" : ""}
+                    placeholder="Matrícula o Correo Electrónico"
                     disabled={isLoading}
                   />
                 </div>
-                {errors.recoveryInput && ( // Mensaje de error para el campo único
+                {errors.recoveryInput && (
                   <div className="error-message">{errors.recoveryInput}</div>
                 )}
 
@@ -108,8 +110,9 @@ const LoginRegister = () => {
       </div>
     );
   }
+  
   // ----------------------------------------------------------------
-  // PANTALLA PRINCIPAL (Login/Registro - Sin cambios adicionales)
+  // PANTALLA PRINCIPAL (Login/Registro)
   // ----------------------------------------------------------------
   return (
     <div
