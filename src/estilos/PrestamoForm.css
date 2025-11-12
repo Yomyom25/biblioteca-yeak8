@@ -1,0 +1,482 @@
+/* === Fondo general con efecto de luz lateral === */
+.app-background {
+  background: linear-gradient(135deg, #0b3361 0%, #1a4b8b 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", "Inter", sans-serif;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* === Pilares laterales mejorados === */
+.app-background::before,
+.app-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 130px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 162, 255, 0.25) 0%,
+    rgba(0, 119, 204, 0.4) 50%,
+    rgba(0, 162, 255, 0.25) 100%
+  );
+  box-shadow: 0 0 25px rgba(0, 174, 255, 0.25);
+  backdrop-filter: blur(6px);
+  z-index: 1;
+  border-radius: 0 15px 15px 0;
+  animation: shimmer 5s infinite ease-in-out;
+}
+
+.app-background::after {
+  right: 0;
+  border-radius: 15px 0 0 15px;
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: 0.6;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scaleY(1.03);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scaleY(1);
+  }
+}
+
+/* === Contenedor principal === */
+.loan-container {
+  background-color: #ffffff;
+  width: 900px;
+  border-radius: 16px;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.25);
+  padding: 35px 40px 45px;
+  animation: fadeIn 0.8s ease-in-out;
+  transform-origin: top;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.loan-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.98) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* === Encabezado === */
+.loan-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.loan-header h2 {
+  font-size: 1.8rem;
+  color: #0b3361;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.loan-header p {
+  color: #627ca4;
+  font-size: 0.95rem;
+}
+
+/* === Cuerpo principal === */
+.loan-body {
+  display: flex;
+  gap: 35px;
+  margin-bottom: 30px;
+}
+
+.loan-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Subtítulo === */
+h3 {
+  color: #0b3361;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+/* === Campos de entrada === */
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  transition: transform 0.2s ease;
+  position: relative;
+}
+
+.field:hover {
+  transform: translateX(2px);
+}
+
+.field label {
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.field input,
+.field select {
+  border: 1px solid #c5c5c5;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 0.9rem;
+  outline: none;
+  background-color: #fff;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: #0b3361;
+  box-shadow: 0 0 6px rgba(11, 51, 97, 0.3);
+}
+
+.date-fields {
+  display: flex;
+  gap: 10px;
+}
+
+.date-fields input {
+  flex: 1;
+}
+
+/* === Texto de aviso === */
+.limit-text {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+/* === Alerta === */
+.alert-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fdecea;
+  border: 1px solid #f5b7b1;
+  color: #b42b1c;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  animation: pulse 1.2s infinite ease-in-out;
+  margin-top: 8px;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 99, 71, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 99, 71, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 99, 71, 0);
+  }
+}
+
+/* === Dropdown de libros - MODIFICADO: sin posición absoluta === */
+.book-dropdown {
+  background: white;
+  border: 1px solid #c5c5c5;
+  border-radius: 8px;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0;
+}
+
+.book-dropdown li {
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.book-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.book-dropdown li:hover {
+  background-color: #f0f6ff;
+}
+
+.no-results {
+  background: white;
+  border: 1px solid #c5c5c5;
+  border-radius: 8px;
+  margin-top: 4px;
+  padding: 12px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+/* === Contenedor de tarjetas de libros seleccionados === */
+.book-card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  margin-top: 8px;
+}
+
+.book-card-container.expanded {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.book-card-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.book-card-container::-webkit-scrollbar-thumb {
+  background-color: #0b3361;
+  border-radius: 8px;
+}
+
+.book-card-container::-webkit-scrollbar-track {
+  background: #dfe6ef;
+}
+
+/* === Tarjetas individuales de libros === */
+.book-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 5px rgba(11, 51, 97, 0.15);
+  border-left: 4px solid #0b3361;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.4s ease forwards;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.book-card.removing {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: all 0.3s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(11, 51, 97, 0.25);
+  background: #f0f6ff;
+}
+
+.book-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.book-emoji {
+  font-size: 1.3rem;
+  transition: transform 0.3s ease;
+}
+
+.book-card:hover .book-emoji {
+  transform: rotate(-6deg) scale(1.1);
+}
+
+.book-card p {
+  margin: 0;
+  color: #0b3361;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* === Botones === */
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: left 0.3s ease;
+}
+
+.btn:hover::after {
+  left: 0;
+}
+
+.btn.cancel {
+  background-color: #e5e7eb;
+  color: #333;
+}
+
+.btn.clear {
+  background-color: #cfd8e3;
+  color: #1f2937;
+}
+
+.btn.reserve {
+  background-color: #ff9800;
+  color: white;
+}
+
+.btn.confirm {
+  background-color: #0b3361;
+  color: white;
+}
+
+.btn.confirm:hover {
+  background-color: #092c56;
+}
+
+.btn.reserve:hover {
+  background-color: #e68900;
+}
+
+.btn:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+.btn:disabled::after {
+  display: none;
+}
+
+/* === Animaciones adicionales === */
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInCard 0.4s ease-out;
+}
+
+@keyframes fadeInCard {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Mejoras de diseño general === */
+.loan-column:first-child {
+  border-right: 1px solid #eaeaea;
+  padding-right: 30px;
+}
+
+.loan-column:last-child {
+  padding-left: 30px;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .loan-body {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .loan-column:first-child {
+    border-right: none;
+    border-bottom: 1px solid #eaeaea;
+    padding-right: 0;
+    padding-bottom: 20px;
+  }
+  
+  .loan-column:last-child {
+    padding-left: 0;
+  }
+  
+  .button-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .btn {
+    flex: 1;
+    min-width: 120px;
+  }
+}

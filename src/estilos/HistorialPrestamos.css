@@ -1,0 +1,206 @@
+/* === Fondo principal === */
+.app-background {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0b3361, #1a4b8b);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 50px 20px;
+  overflow: hidden;
+}
+
+/* === Pilares iluminados === */
+.pillar {
+  position: absolute;
+  top: 0;
+  width: 120px;
+  height: 100%;
+  z-index: 1;
+  opacity: 0.4;
+  background: radial-gradient(
+      circle at center,
+      rgba(80, 150, 255, 0.5) 0%,
+      rgba(20, 60, 130, 0.4) 50%,
+      rgba(0, 30, 80, 0.1) 100%
+    ),
+    linear-gradient(to bottom, rgba(40, 90, 180, 0.9), rgba(10, 30, 80, 0.7));
+  filter: blur(3px);
+  box-shadow: 0 0 60px rgba(100, 160, 255, 0.3);
+  transition: all 1s ease;
+}
+
+.pillar-left {
+  left: -30px;
+  animation: pillarGlowLeft 6s ease-in-out infinite alternate;
+}
+
+.pillar-right {
+  right: -30px;
+  animation: pillarGlowRight 6s ease-in-out infinite alternate;
+}
+
+/* === Animaciones de iluminación === */
+@keyframes pillarGlowLeft {
+  from {
+    opacity: 0.3;
+    box-shadow: 0 0 40px rgba(80, 150, 255, 0.25);
+  }
+  to {
+    opacity: 0.6;
+    box-shadow: 0 0 80px rgba(120, 190, 255, 0.5);
+  }
+}
+
+@keyframes pillarGlowRight {
+  from {
+    opacity: 0.4;
+    box-shadow: 0 0 40px rgba(80, 150, 255, 0.25);
+  }
+  to {
+    opacity: 0.7;
+    box-shadow: 0 0 90px rgba(120, 200, 255, 0.55);
+  }
+}
+
+/* === Contenedor principal === */
+.historial-container {
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+  max-width: 1100px;
+  width: 100%;
+  padding: 30px 40px;
+  animation: fadeIn 0.6s ease;
+  overflow: hidden;
+}
+
+.historial-header h2 {
+  color: #003b8e;
+  font-size: 28px;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.historial-header p {
+  color: #5c6b80;
+  font-size: 15px;
+  margin-bottom: 25px;
+}
+
+/* === Contenedor de tabla === */
+.historial-table-container {
+  overflow-x: auto;
+  border-radius: 14px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* === Tabla moderna === */
+.historial-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #f9fbff;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* Cabecera */
+.historial-table th {
+  background-color: #003b8e;
+  color: white;
+  text-align: left;
+  padding: 14px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  border-bottom: 3px solid #004fa5;
+}
+
+/* Celdas */
+.historial-table td {
+  padding: 14px 18px;
+  color: #2e3b55;
+  font-size: 15px;
+  background: white;
+  border-bottom: 1px solid #e3e9f5;
+  transition: all 0.3s ease;
+}
+
+/* Filas interactivas */
+.historial-table tr:hover td {
+  background: #eaf3ff;
+  transform: scale(1.01);
+  box-shadow: inset 0 -1px 0 #b5d5ff;
+  transition: all 0.3s ease;
+}
+
+/* Fila activa */
+.historial-table tr.active td {
+  background: #dce9ff;
+  font-weight: 600;
+  color: #003b8e;
+}
+
+/* === Estatus === */
+.estatus {
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 13px;
+  display: inline-block;
+}
+
+.estatus.devuelto {
+  background-color: #e3f9e5;
+  color: #1e7d32;
+  border: 1px solid #b2e3b5;
+}
+
+.estatus.pendiente {
+  background-color: #fff4e3;
+  color: #a75b00;
+  border: 1px solid #ffd59c;
+}
+
+/* === Acceso denegado === */
+.access-denied {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  color: #d9534f;
+  text-align: center;
+  animation: fadeIn 0.6s ease;
+}
+
+.access-denied h2 {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.access-denied p {
+  color: #444;
+  font-size: 16px;
+}
+
+/* === Animaciones generales === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-row {
+  animation: fadeIn 0.4s ease;
+}
